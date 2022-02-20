@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DapperDemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220220165246_AddCompaniesToDb")]
+    [Migration("20220220170523_AddCompaniesToDb")]
     partial class AddCompaniesToDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,8 +22,10 @@ namespace DapperDemo.Migrations
 
             modelBuilder.Entity("DapperDemo.Models.Company", b =>
                 {
-                    b.Property<string>("CompanyId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("CompanyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
