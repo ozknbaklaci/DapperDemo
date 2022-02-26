@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DapperDemo.Models;
 using DapperDemo.Repository;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DapperDemo.Controllers
 {
@@ -24,8 +26,16 @@ namespace DapperDemo.Controllers
         }
 
         // GET: Employees/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var companyList = (await _companyRepository.GetAll()).Select(s => new SelectListItem
+            {
+                Text = s.Name,
+                Value = s.CompanyId.ToString()
+            });
+
+            ViewBag.CompanyList = companyList;
+
             return View();
         }
 
@@ -55,6 +65,15 @@ namespace DapperDemo.Controllers
             {
                 return NotFound();
             }
+
+            var companyList = (await _companyRepository.GetAll()).Select(s => new SelectListItem
+            {
+                Text = s.Name,
+                Value = s.CompanyId.ToString()
+            });
+
+            ViewBag.CompanyList = companyList;
+
             return View(employee);
         }
 
