@@ -1,4 +1,6 @@
-# DapperDemo Package
+# Dapper with ASP.NET Core (.NET 5)
+
+Application Package
 
 1- Dapper
 
