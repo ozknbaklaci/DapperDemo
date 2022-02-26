@@ -3,6 +3,7 @@ using Dapper.Contrib.Extensions;
 
 namespace DapperDemo.Models
 {
+    [Table("Companies")]
     public class Company
     {
         [Key]

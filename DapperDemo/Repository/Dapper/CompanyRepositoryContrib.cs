@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Dapper.Contrib.Extensions;
 using DapperDemo.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -20,12 +21,12 @@ namespace DapperDemo.Repository.Dapper
 
         public async Task<Company> Find(int id)
         {
-            return (await _db.QueryAsync<Company>("usp_GetCompany", new { CompanyId = id }, commandType: CommandType.StoredProcedure)).Single();
+            return await _db.GetAsync<Company>(id);
         }
 
         public async Task<List<Company>> GetAll()
         {
-            return (await _db.QueryAsync<Company>("usp_GetAllCompany", commandType: CommandType.StoredProcedure)).ToList();
+            return (await _db.GetAllAsync<Company>()).ToList();
         }
 
         public async Task<Company> Add(Company company)
