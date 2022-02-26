@@ -50,7 +50,8 @@ namespace DapperDemo.Repository.Dapper
 
         public async Task Remove(int id)
         {
-
+            var queries = "DELETE FROM Companies WHERE CompanyId = @CompanyId";
+            await _db.ExecuteAsync(queries, new { CompanyId = id });
         }
     }
 }
