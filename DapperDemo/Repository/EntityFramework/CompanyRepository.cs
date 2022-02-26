@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DapperDemo.Data;
 using DapperDemo.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DapperDemo.Repository
+namespace DapperDemo.Repository.EntityFramework
 {
-    public class CompanyRepositoryEf : ICompanyRepository
+    public class CompanyRepository : ICompanyRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public CompanyRepositoryEf(ApplicationDbContext dbContext)
+        public CompanyRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }

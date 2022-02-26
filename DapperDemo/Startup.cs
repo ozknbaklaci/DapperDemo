@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using DapperDemo.Data;
 using DapperDemo.Repository;
 using Microsoft.EntityFrameworkCore;
+using DapperDemo.Repository.Dapper;
 
 namespace DapperDemo
 {
@@ -29,7 +30,11 @@ namespace DapperDemo
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<ICompanyRepository, CompanyRepositoryEf>();
+            //EntityFramework
+            //services.AddScoped<ICompanyRepository, CompanyRepository>();
+
+            //Dapper
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
 
             services.AddControllersWithViews();
         }
