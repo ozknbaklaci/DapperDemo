@@ -35,14 +35,17 @@ namespace DapperDemo.Repository.Dapper
             var queries = "INSERT INTO Companies (Name, Address, City, State, PostalCode) VALUES(@Name, @Address, @City, @State, @PostalCode); SELECT CAST(SCOPE_IDENTITY() as int)";
 
             var id = (await _db.QueryAsync<int>(queries, company)).Single();
-
             company.CompanyId = id;
+
             return company;
         }
 
         public async Task<Company> Update(Company company)
         {
-            return null;
+            var queries = "UPDATE Companies SET Name = @Name, Address =  @Address, City =  @City, State =  @State, PostalCode = @PostalCode WHERE CompanyId = @CompanyId";
+            await _db.ExecuteAsync(queries, company);
+
+            return company;
         }
 
         public async Task Remove(int id)
