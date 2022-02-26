@@ -31,38 +31,22 @@ namespace DapperDemo.Repository.Dapper
 
         public async Task<Company> Add(Company company)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add("@CompanyId", 0, DbType.Int32, ParameterDirection.InputOutput);
-            parameters.Add("@Name", company.Name);
-            parameters.Add("@Address", company.Address);
-            parameters.Add("@City", company.City);
-            parameters.Add("@State", company.State);
-            parameters.Add("@PostalCode", company.PostalCode);
-
-            await _db.ExecuteAsync("usp_AddCompany", parameters, commandType: CommandType.StoredProcedure);
-            company.CompanyId = parameters.Get<int>("CompanyId");
+            var id = await _db.InsertAsync(company);
+            company.CompanyId = id;
 
             return company;
         }
 
         public async Task<Company> Update(Company company)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add("@CompanyId", company.CompanyId, DbType.Int32);
-            parameters.Add("@Name", company.Name);
-            parameters.Add("@Address", company.Address);
-            parameters.Add("@City", company.City);
-            parameters.Add("@State", company.State);
-            parameters.Add("@PostalCode", company.PostalCode);
-
-            await _db.ExecuteAsync("usp_UpdateCompany", parameters, commandType: CommandType.StoredProcedure);
+            await _db.UpdateAsync(company);
 
             return company;
         }
 
         public async Task Remove(int id)
         {
-            await _db.ExecuteAsync("usp_RemoveCompany", new { CompanyId = id }, commandType: CommandType.StoredProcedure);
+            await _db.DeleteAsync(new Company { CompanyId = id });
         }
     }
 }
