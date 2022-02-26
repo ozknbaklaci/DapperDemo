@@ -1,50 +1,52 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DapperDemo.Data;
 using DapperDemo.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DapperDemo.Repository
 {
-    public class CompanyRepositoryEF : ICompanyRepository
+    public class CompanyRepositoryEf : ICompanyRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public CompanyRepositoryEF(ApplicationDbContext dbContext)
+        public CompanyRepositoryEf(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public Company Find(int id)
+        public async Task<Company> Find(int id)
         {
-            return _dbContext.Companies.FirstOrDefault(x => x.CompanyId == id);
+            return await _dbContext.Companies.FirstOrDefaultAsync(x => x.CompanyId == id);
         }
 
-        public List<Company> GetAll()
+        public async Task<List<Company>> GetAll()
         {
-            return _dbContext.Companies.ToList();
+            return await _dbContext.Companies.ToListAsync();
         }
 
-        public Company Add(Company company)
+        public async Task<Company> Add(Company company)
         {
-            _dbContext.Companies.Add(company);
-            _dbContext.SaveChanges();
+            await _dbContext.Companies.AddAsync(company);
+            await _dbContext.SaveChangesAsync();
 
             return company;
         }
 
-        public Company Update(Company company)
+        public async Task<Company> Update(Company company)
         {
             _dbContext.Companies.Update(company);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return company;
         }
 
-        public void Remove(int id)
+        public async Task Remove(int id)
         {
-            var company = _dbContext.Companies.FirstOrDefault(x => x.CompanyId == id);
+            var company = await _dbContext.Companies.FirstOrDefaultAsync(x => x.CompanyId == id);
             if (company != null) _dbContext.Companies.Remove(company);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

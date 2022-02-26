@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DapperDemo.Data;
+using DapperDemo.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace DapperDemo
@@ -27,6 +28,8 @@ namespace DapperDemo
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<ICompanyRepository, CompanyRepositoryEf>();
 
             services.AddControllersWithViews();
         }
