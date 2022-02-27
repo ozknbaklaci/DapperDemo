@@ -11,6 +11,5 @@ namespace DapperDemo.Repository
         Task<Employee> Add(Employee employee);
         Task<Employee> Update(Employee employee);
         Task Remove(int id);
-        Task<List<Employee>> GetEmployeeWithCompany(int id);
     }
 }
