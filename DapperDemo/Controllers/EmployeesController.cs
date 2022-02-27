@@ -20,9 +20,9 @@ namespace DapperDemo.Controllers
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int companyId = 0)
         {
-            var employees = await _employeeRepository.GetEmployeeWithCompany();
+            var employees = await _employeeRepository.GetEmployeeWithCompany(companyId);
 
             return View(employees);
         }

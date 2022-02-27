@@ -55,15 +55,20 @@ namespace DapperDemo.Repository.Dapper
         }
 
         //One to One Relation in Dapper
-        public async Task<List<Employee>> GetEmployeeWithCompany()
+        public async Task<List<Employee>> GetEmployeeWithCompany(int id)
         {
             var queries =
                 "SELECT em.*, co.* FROM Employees as em INNER JOIN Companies as co ON em.CompanyId = co.CompanyId";
+            //with Parameters
+            if (id != 0)
+            {
+                queries += " WHERE em.CompanyId = @Id";
+            }
             var employee = await _db.QueryAsync<Employee, Company, Employee>(queries, (e, c) =>
              {
                  e.Company = c;
                  return e;
-             }, splitOn: "CompanyId");
+             }, new { Id = id }, splitOn: "CompanyId");
 
             return employee.ToList();
         }
