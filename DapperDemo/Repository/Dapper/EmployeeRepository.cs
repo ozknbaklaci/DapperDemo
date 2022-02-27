@@ -53,5 +53,19 @@ namespace DapperDemo.Repository.Dapper
             var queries = "DELETE FROM Employees WHERE EmployeeId = @EmployeeId";
             await _db.ExecuteAsync(queries, new { EmployeeId = id });
         }
+
+        //One to One Relation in Dapper
+        public async Task<List<Employee>> GetEmployeeWithCompany()
+        {
+            var queries =
+                "SELECT em.*, co.* FROM Employees as em INNER JOIN Companies as co ON em.CompanyId = co.CompanyId";
+            var employee = await _db.QueryAsync<Employee, Company, Employee>(queries, (e, c) =>
+             {
+                 e.Company = c;
+                 return e;
+             }, splitOn: "CompanyId");
+
+            return employee.ToList();
+        }
     }
 }

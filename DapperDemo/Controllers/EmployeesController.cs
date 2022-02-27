@@ -22,7 +22,9 @@ namespace DapperDemo.Controllers
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            return View(await _employeeRepository.GetAll());
+            var employees = await _employeeRepository.GetEmployeeWithCompany();
+
+            return View(employees);
         }
 
         // GET: Employees/Create
