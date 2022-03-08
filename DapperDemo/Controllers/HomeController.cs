@@ -1,26 +1,27 @@
 ﻿using DapperDemo.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
+using DapperDemo.Repository;
 
 namespace DapperDemo.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IBonusRepository _bonusRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IBonusRepository bonusRepository)
         {
             _logger = logger;
+            _bonusRepository = bonusRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var companies = await _bonusRepository.GetAllCompanyWithEmployees();
+            return View(companies);
         }
 
         public IActionResult Privacy()
