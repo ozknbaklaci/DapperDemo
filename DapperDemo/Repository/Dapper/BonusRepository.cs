@@ -37,7 +37,7 @@ namespace DapperDemo.Repository.Dapper
             return employee.ToList();
         }
 
-        public async Task<Company> GetCompanyWithAddresses(int companyId)
+        public async Task<Company> GetCompanyWithEmployees(int companyId)
         {
             var parameter = new
             {
@@ -52,6 +52,26 @@ namespace DapperDemo.Repository.Dapper
             company.Employees = (await results.ReadAsync<Employee>()).ToList();
 
             return company;
+        }
+
+        public async Task<List<Company>> GetAllCompanyWithEmployees()
+        {
+            var queries =
+                "SELECT co.*, em.* FROM Employees as em INNER JOIN Companies as co ON em.CompanyId = co.CompanyId";
+            var companyDictionary = new Dictionary<int, Company>();
+
+            var company = await _db.QueryAsync<Company, Employee, Company>(queries, (c, e) =>
+            {
+                if (!companyDictionary.TryGetValue(c.CompanyId, out var currentCompany))
+                {
+                    currentCompany = c;
+                    companyDictionary.Add(currentCompany.CompanyId, currentCompany);
+                }
+                currentCompany.Employees.Add(e);
+                return currentCompany;
+            }, splitOn: "EmployeeId");
+
+            return company.Distinct().ToList();
         }
     }
 }
