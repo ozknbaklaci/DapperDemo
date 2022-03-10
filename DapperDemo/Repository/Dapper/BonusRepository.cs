@@ -73,5 +73,21 @@ namespace DapperDemo.Repository.Dapper
 
             return company.Distinct().ToList();
         }
+
+        public async Task AddTestCompanyWithEmployeesWithTransaction(Company company)
+        {
+            var queries = "INSERT INTO Companies (Name, Address, City, State, PostalCode) VALUES(@Name, @Address, @City, @State, @PostalCode); SELECT CAST(SCOPE_IDENTITY() as int)";
+            var id = (await _db.QueryAsync<int>(queries, company)).Single();
+            company.CompanyId = id;
+
+            foreach (var employee in company.Employees)
+            {
+                employee.CompanyId = company.CompanyId;
+                var employeeQueries = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES(@Name, @Title, @Email, @Phone, @CompanyId); SELECT CAST(SCOPE_IDENTITY() as int)";
+
+                var employeeId = (await _db.QueryAsync<int>(employeeQueries, employee)).Single();
+                employee.EmployeeId = employeeId;
+            }
+        }
     }
 }

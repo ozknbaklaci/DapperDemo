@@ -9,5 +9,6 @@ namespace DapperDemo.Repository
         Task<List<Employee>> GetEmployeeWithCompany(int id);
         Task<Company> GetCompanyWithEmployees(int companyId);
         Task<List<Company>> GetAllCompanyWithEmployees();
+        Task AddTestCompanyWithEmployeesWithTransaction(Company company);
     }
 }

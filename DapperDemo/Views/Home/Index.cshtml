@@ -9,29 +9,29 @@
         </div>
     </div>
 
-@foreach (var comp in Model)
+@foreach (var company in Model)
 {
-    <h1>@comp.Name</h1>
+    <h1>@company.Name</h1>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => comp.Employees.FirstOrDefault().Name)
+                    @Html.DisplayNameFor(model => company.Employees.FirstOrDefault().Name)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => comp.Employees.FirstOrDefault().Email)
+                    @Html.DisplayNameFor(model => company.Employees.FirstOrDefault().Email)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => comp.Employees.FirstOrDefault().Phone)
+                    @Html.DisplayNameFor(model => company.Employees.FirstOrDefault().Phone)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => comp.Employees.FirstOrDefault().Title)
+                    @Html.DisplayNameFor(model => company.Employees.FirstOrDefault().Title)
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in comp.Employees)
+            @foreach (var item in company.Employees)
             {
                 <tr>
                     <td>

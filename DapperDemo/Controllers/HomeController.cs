@@ -1,4 +1,6 @@
-﻿using DapperDemo.Models;
+﻿using System;
+using System.Collections.Generic;
+using DapperDemo.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -22,6 +24,38 @@ namespace DapperDemo.Controllers
         {
             var companies = await _bonusRepository.GetAllCompanyWithEmployees();
             return View(companies);
+        }
+
+        public async Task<IActionResult> AddTestRecords()
+        {
+            var company = new Company()
+            {
+                Name = $"Test-{Guid.NewGuid()}",
+                Address = "test address",
+                City = "test city",
+                PostalCode = "test postalCode",
+                State = "test state",
+                Employees = new List<Employee>
+                {
+                    new Employee()
+                    {
+                        Email = "test Email",
+                        Name = $"Test Name-{Guid.NewGuid()}",
+                        Phone = " test phone",
+                        Title = "Test Manager"
+                    },
+                    new Employee()
+                    {
+                        Email = "test Email 2",
+                        Name = $"Test Name 2-{Guid.NewGuid()}",
+                        Phone = " test phone 2",
+                        Title = "Test Manager 2"
+                    }
+                }
+            };
+
+            await _bonusRepository.AddTestCompanyWithEmployeesWithTransaction(company);
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
