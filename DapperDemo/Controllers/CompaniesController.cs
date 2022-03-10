@@ -10,20 +10,26 @@ namespace DapperDemo.Controllers
         private readonly ICompanyRepository _companyRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IBonusRepository _bonusRepository;
+        private readonly IDapperStoredProcRepo _dapperStoredProcRepo;
 
         public CompaniesController(ICompanyRepository companyRepository,
             IEmployeeRepository employeeRepository,
-            IBonusRepository bonusRepository)
+            IBonusRepository bonusRepository,
+            IDapperStoredProcRepo dapperStoredProcRepo)
         {
             _companyRepository = companyRepository;
             _employeeRepository = employeeRepository;
             _bonusRepository = bonusRepository;
+            _dapperStoredProcRepo = dapperStoredProcRepo;
         }
 
         // GET: Companies
         public async Task<IActionResult> Index()
         {
-            return View(await _companyRepository.GetAll());
+            //return View(await _companyRepository.GetAll());
+
+            //Generic Repo Example
+            return View(_dapperStoredProcRepo.List<Company>("usp_GetAllCompany"));
         }
 
         // GET: Companies/Details/5
@@ -72,7 +78,10 @@ namespace DapperDemo.Controllers
                 return NotFound();
             }
 
-            var company = await _companyRepository.Find(id.GetValueOrDefault());
+            //var company = await _companyRepository.Find(id.GetValueOrDefault());
+
+            //Generic Repo Example
+            var company = _dapperStoredProcRepo.Single<Company>("usp_GetCompany", new { CompanyId = id.GetValueOrDefault() });
             if (company == null)
             {
                 return NotFound();
