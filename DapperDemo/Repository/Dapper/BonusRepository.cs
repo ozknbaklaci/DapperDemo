@@ -80,14 +80,24 @@ namespace DapperDemo.Repository.Dapper
             var id = (await _db.QueryAsync<int>(queries, company)).Single();
             company.CompanyId = id;
 
-            foreach (var employee in company.Employees)
-            {
-                employee.CompanyId = company.CompanyId;
-                var employeeQueries = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES(@Name, @Title, @Email, @Phone, @CompanyId); SELECT CAST(SCOPE_IDENTITY() as int)";
+            //foreach (var employee in company.Employees)
+            //{
+            //    employee.CompanyId = company.CompanyId;
+            //    var employeeQueries = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES(@Name, @Title, @Email, @Phone, @CompanyId); SELECT CAST(SCOPE_IDENTITY() as int)";
 
-                var employeeId = (await _db.QueryAsync<int>(employeeQueries, employee)).Single();
-                employee.EmployeeId = employeeId;
-            }
+            //    var employeeId = (await _db.QueryAsync<int>(employeeQueries, employee)).Single();
+            //    employee.EmployeeId = employeeId;
+            //}
+
+            var employees = company.Employees.Select(c =>
+            {
+                c.CompanyId = id;
+                return c;
+            }).ToList();
+
+            var employeeQueries = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES(@Name, @Title, @Email, @Phone, @CompanyId); SELECT CAST(SCOPE_IDENTITY() as int)";
+            await _db.ExecuteAsync(employeeQueries, company.Employees);
+
         }
 
         public async Task RemoveRange(int[] companyId)
