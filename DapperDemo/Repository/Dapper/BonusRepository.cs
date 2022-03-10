@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -74,7 +75,7 @@ namespace DapperDemo.Repository.Dapper
             return company.Distinct().ToList();
         }
 
-        public async Task AddTestCompanyWithEmployeesWithTransaction(Company company)
+        public async Task AddTestCompanyWithEmployees(Company company)
         {
             var queries = "INSERT INTO Companies (Name, Address, City, State, PostalCode) VALUES(@Name, @Address, @City, @State, @PostalCode); SELECT CAST(SCOPE_IDENTITY() as int)";
             var id = (await _db.QueryAsync<int>(queries, company)).Single();
@@ -97,7 +98,34 @@ namespace DapperDemo.Repository.Dapper
 
             var employeeQueries = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES(@Name, @Title, @Email, @Phone, @CompanyId); SELECT CAST(SCOPE_IDENTITY() as int)";
             await _db.ExecuteAsync(employeeQueries, company.Employees);
+        }
 
+        public async Task AddTestCompanyWithEmployeesWithTransaction(Company company)
+        {
+            using var connection = _db;
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            try
+            {
+                var queries = "INSERT INTO Companies (Name, Address, City, State, PostalCode) VALUES(@Name, @Address, @City, @State, @PostalCode); SELECT CAST(SCOPE_IDENTITY() as int)";
+                var id = (await _db.QueryAsync<int>(queries, company, transaction)).Single();
+                company.CompanyId = id;
+
+                company.Employees.Select(c =>
+                {
+                    c.CompanyId = id;
+                    return c;
+                }).ToList();
+
+                var employeeQueries = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES(@Name, @Title, @Email, @Phone, @CompanyId); SELECT CAST(SCOPE_IDENTITY() as int)";
+                await _db.ExecuteAsync(employeeQueries, company.Employees, transaction);
+
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+            }
         }
 
         public async Task RemoveRange(int[] companyId)
