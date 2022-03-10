@@ -10,5 +10,7 @@ namespace DapperDemo.Repository
         Task<Company> GetCompanyWithEmployees(int companyId);
         Task<List<Company>> GetAllCompanyWithEmployees();
         Task AddTestCompanyWithEmployeesWithTransaction(Company company);
+        Task RemoveRange(int[] companyId);
+        Task<List<Company>> FilterCompanyByName(string name);
     }
 }

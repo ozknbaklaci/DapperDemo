@@ -4,6 +4,7 @@ using DapperDemo.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using DapperDemo.Repository;
 
@@ -55,6 +56,12 @@ namespace DapperDemo.Controllers
             };
 
             await _bonusRepository.AddTestCompanyWithEmployeesWithTransaction(company);
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> RemoveTestRecords()
+        {
+            var companyIdToRemove = (await _bonusRepository.FilterCompanyByName("Test")).Select(i => i.CompanyId).ToArray();
+            await _bonusRepository.RemoveRange(companyIdToRemove);
             return RedirectToAction(nameof(Index));
         }
 

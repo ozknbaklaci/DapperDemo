@@ -89,5 +89,15 @@ namespace DapperDemo.Repository.Dapper
                 employee.EmployeeId = employeeId;
             }
         }
+
+        public async Task RemoveRange(int[] companyId)
+        {
+            await _db.QueryAsync("DELETE FROM Companies WHERE CompanyId IN @companyId", new { companyId });
+        }
+
+        public async Task<List<Company>> FilterCompanyByName(string name)
+        {
+            return (await _db.QueryAsync<Company>("SELECT * FROM Companies WHERE Name like '%' + @name + '%'", new { name })).ToList();
+        }
     }
 }
